@@ -48,6 +48,11 @@ public class Todo {
     return _id.hashCode();
   }
 
+
+  public boolean getStatus() {
+    return status;
+  }
+
   // Having some kind of `toString()` allows us to print `User`s,
   // which can be useful/necessary in error handling. This only
   // returns the name, but it could be extended to return more or

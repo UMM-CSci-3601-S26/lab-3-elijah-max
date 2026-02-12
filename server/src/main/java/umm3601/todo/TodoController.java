@@ -74,7 +74,9 @@ public class TodoController implements Controller {
       ctx.json(todo);
       ctx.status(HttpStatus.OK);
     }
+
   }
+
 
   /**
    * Set the JSON body of the response to be a list of all the todos returned from the database

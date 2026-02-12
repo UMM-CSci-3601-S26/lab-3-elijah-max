@@ -734,15 +734,25 @@ class TodoControllerSpec {
 
   }
 
-  @Test
+  @Test //if i don't get done need to fix this by using queryParamMap
   void canFilterTodosByStatus() throws IOException {
-    when(ctx.queryParam("filter")).thenReturn("todos");
+   //Map<String, List<String>> queryParams = new HashMap<>();
+    //queryParams.put(TodoController.STATUS_KEY, Arrays.asList(new boolean[] {statusParamBoolean} ));
+    when(ctx.queryParam("status")).thenReturn("complete");
     todoController.getTodos(ctx);
 
     verify(ctx).json(todoArrayListCaptor.capture());
     verify(ctx).status(HttpStatus.OK);
 
-    assertEquals()
+    List<Todo> result = todoArrayListCaptor.getValue();
+
+    assertEquals(3, result.size());
+
+    for (Todo todo : result) {
+        assertTrue(todo.getStatus());
+    }
+
+
 
   }
 
@@ -763,7 +773,7 @@ class TodoControllerSpec {
   }
 
   @Test
-  void canSortByTodoFeild() throws IOException {
+  void canSortByTodoField() throws IOException {
 
   }
 
