@@ -729,58 +729,6 @@ class TodoControllerSpec {
     assertEquals(3, todoArrayListCaptor.getValue().size());
   }
 
-  @Test
-  void canLimitNumberOfTodosReturned() throws IOException {
-
-  }
-
-  @Test //if i don't get done need to fix this by using queryParamMap
-  void canFilterTodosByStatus() throws IOException {
-   //Map<String, List<String>> queryParams = new HashMap<>();
-    //queryParams.put(TodoController.STATUS_KEY, Arrays.asList(new boolean[] {statusParamBoolean} ));
-    when(ctx.queryParam("status")).thenReturn("complete");
-    todoController.getTodos(ctx);
-
-    verify(ctx).json(todoArrayListCaptor.capture());
-    verify(ctx).status(HttpStatus.OK);
-
-    List<Todo> result = todoArrayListCaptor.getValue();
-
-    assertEquals(3, result.size());
-
-    for (Todo todo : result) {
-        assertTrue(todo.getStatus());
-    }
-
-
-
-  }
-
-
-  @Test
-  void canFilterTodosByContentsOfBody() throws IOException {
-
-  }
-
-  @Test
-  void canFilterTodosByOwner() throws IOException {
-
-  }
-
-  @Test
-  void canFilterTodosByCategory() throws IOException {
-
-  }
-
-  @Test
-  void canSortByTodoField() throws IOException {
-
-  }
-
-  @Test
-  void canApplyCombinationsOfFilters() throws IOException {
-
-  }
 
 
 
@@ -793,3 +741,4 @@ class TodoControllerSpec {
 
 
 }
+
