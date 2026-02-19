@@ -21,5 +21,11 @@ describe('Add todo', () => {
     page.getFormField('body').type('invalid');
     page.getTodoButton().should('be.disabled');
     page.getFormField('body').type('')
-  })
+    page.addTodoButton().should('be.enabled');
+  });
+
+  it('Should show error messages for invalid inpuits', () => {
+    cy.get('[data-test=nameError]').should('exist').and('be.visible');
+  }
+  )
 }
