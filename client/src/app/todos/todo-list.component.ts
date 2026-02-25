@@ -13,10 +13,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { catchError, combineLatest, of, switchMap, tap } from 'rxjs';
-import { Todo, TodoBody } from './todo';
-import { TodoCardComponent } from './todo.service';
+import { Todo } from './todo';
+import { TodoService } from './todo.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-
 
 @Component({
   selector: 'app-todo-list-component',
@@ -31,7 +30,6 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
     MatSelectModule,
     MatOptionModule,
     MatRadioModule,
-    TodoCardComponent,
     MatListModule,
     RouterLink,
     MatButtonModule,
@@ -40,12 +38,12 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
   ],
 })
 export class TodoListComponent {
-  private todoService = inject(todoService);
+  private todoService: TodoService = inject(TodoService);
   private snackBar = inject(MatSnackBar);
 
   todoOwner = signal<string | undefined>(undefined);
   todoStatus = signal<boolean | undefined>(undefined);
-  todoBody = signal<TodoBody | undefined>(undefined);
+  todoBody = signal<string | undefined>(undefined);
   todoCategory = signal<string | undefined>(undefined);
 
   viewType = signal<'card' | 'list'>('card');
@@ -53,17 +51,38 @@ export class TodoListComponent {
   errMsg = signal<string | undefined>(undefined);
 
   private todoBody$ = toObservable(this.todoBody);
-  private todoStatus$ = signal<string | undefined>(undefined);
+  private todoStatus$ = toObservable(this.todoStatus);
 
-  serverFilterTodos =
-
+  serverFilteredTodos =
     toSignal(
-      combineLatest([this.todoBody$, this.todoStatus$]).pipe(
-        switchMap(([body, status]) =>
+      combineLatest([this.todoStatus$, this.todoBody$]).pipe(
+        switchMap(([status, body]) =>
           this.todoService.getTodos({
-            body,
             status,
-          }))
+            body,
+          })
+        ),
+        catchError((err) => {
+          if(!(err.error instanceof ErrorEvent)) {
+            this.errMsg.set(
+              `Problem contacting the server - Error Code:   ${err.status}\nMessage: ${err.message}`
+            );
+          }
+          this.snackBar.open(this.errMsg(), 'OK', {duration: 6000});
+          return of<Todo[]>([]);
+        }),
+        tap(() => {
+
+        })
       )
-    )
+    );
+  filteredTodos = computed(() => {
+    const todos =this.serverFilteredTodos() || [];
+
+    return todos.filter(todo => {
+      const ownerMatch = this.todoOwner() ? todo.owner.includes(this.todoOwner()!) : true;
+      const categoryMatch = this.todoCategory() ? todo.category.includes(this.todoCategory()!) : true;
+      return ownerMatch && categoryMatch;
+    });
+  });
 }
