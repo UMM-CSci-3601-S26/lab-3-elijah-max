@@ -1,12 +1,24 @@
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
+import { of } from "rxjs";
 import { TodoListComponent } from "./todo-list.component";
+import { TodoService } from "./todo.service"
 
 
 
 describe('Todo list', () => {
   let todoList: TodoListComponent;
   let fixture: ComponentFixture<TodoListComponent>;
+
+  const testTodos = [
+    { owner: 'Chris', status: true, body: 'This is a video games todo', category: 'video games' },
+    { owner: 'Chris', status: true, body: 'This is another video games todo', category: 'video games' },
+    { owner: 'Pat', status: false, body: 'This is a homework todo', category: 'homework' },
+    { owner: 'Jamie', status: false, body: 'This is a software design todo', category: 'software design' },
+    { owner: 'Sam', status: true, body: "This is Sam's todo", category: 'homework' },
+  ];
+
+
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
