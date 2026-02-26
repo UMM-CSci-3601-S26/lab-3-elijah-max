@@ -11,7 +11,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterLink } from '@angular/router';
 import { catchError, combineLatest, of, switchMap, tap } from 'rxjs';
 import { Todo } from './todo';
 import { TodoService } from './todo.service';
@@ -31,7 +30,6 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
     MatOptionModule,
     MatRadioModule,
     MatListModule,
-    RouterLink,
     MatButtonModule,
     MatTooltipModule,
     MatIconModule,

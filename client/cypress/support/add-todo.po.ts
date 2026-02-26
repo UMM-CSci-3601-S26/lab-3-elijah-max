@@ -1,4 +1,4 @@
-import {Todo} from 'src/app/todos/todo';
+import {Todo} from 'src/app/todo lists/todo';
 
 export class AddTodoPage {
 

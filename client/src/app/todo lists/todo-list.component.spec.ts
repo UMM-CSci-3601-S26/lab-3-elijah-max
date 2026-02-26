@@ -1,35 +1,36 @@
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
-import { of } from "rxjs";
 import { TodoListComponent } from "./todo-list.component";
 import { TodoService } from "./todo.service"
+import { provideHttpClient } from "@angular/common/http";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
+
 
 
 
 describe('Todo list', () => {
   let todoList: TodoListComponent;
   let fixture: ComponentFixture<TodoListComponent>;
-
-  const testTodos = [
-    { owner: 'Chris', status: true, body: 'This is a video games todo', category: 'video games' },
-    { owner: 'Chris', status: true, body: 'This is another video games todo', category: 'video games' },
-    { owner: 'Pat', status: false, body: 'This is a homework todo', category: 'homework' },
-    { owner: 'Jamie', status: false, body: 'This is a software design todo', category: 'software design' },
-    { owner: 'Sam', status: true, body: "This is Sam's todo", category: 'homework' },
-  ];
+  let todoService: TodoService;
 
 
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [TodoListComponent],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        TodoService
+      ],
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TodoListComponent);
     todoList = fixture.componentInstance;
+    todoService = TestBed.inject(TodoService);
     fixture.detectChanges();
   });
 
@@ -42,6 +43,28 @@ describe('Todo list', () => {
     expect(todos).toBeDefined();
     expect(Array.isArray(todos)).toBe(true);
     expect(todos.length).toBeGreaterThan(0);
+  });
+
+  it('should call getTodos() when todoStatus signal changes', () => {
+    const spy = spyOn(todoService, 'getTodos').and.callThrough();
+    todoList.todoStatus.set(true);
+    fixture.detectChanges();
+    expect(spy).toHaveBeenCalledWith({
+      status: true,
+      body: undefined,
+      owner: undefined,
+    });
+  });
+
+  it('should call getTodos() when todoBody signal changes', () => {
+    const spy = spyOn(todoService, 'getTodos').and.callThrough();
+    todoList.todoBody.set("Buy");
+    fixture.detectChanges();
+    expect(spy).toHaveBeenCalledWith({
+      status: undefined,
+      body: "Buy",
+      owner: undefined,
+    });
   });
 
   it('filteredTodos() should filter by owner and category', () => {
