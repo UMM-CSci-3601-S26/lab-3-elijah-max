@@ -1,4 +1,4 @@
-import { Todo } from 'src/app/todo lists/todo';
+import { Todo } from 'src/app/todos/todo';
 import { AddTodoPage } from '../support/add-todo.po';
 
 describe('Add todo', () => {
