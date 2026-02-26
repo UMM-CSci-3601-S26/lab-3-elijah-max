@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bson.Document;
-import org.bson.conversions.Bson;
+
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -41,7 +41,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
+
 
 import io.javalin.Javalin;
 import io.javalin.http.BadRequestResponse;
@@ -744,7 +744,7 @@ void canFilterTodosByStatus() throws IOException {
 
   Map<String, List<String>> queryParams = new HashMap<>();
   queryParams.put(TodoController.STATUS_KEY,
-      Arrays.asList(new String[] { targetStatusString }));
+      Arrays.asList(new String[] {targetStatusString}));
 
   when(ctx.queryParamMap()).thenReturn(queryParams);
   when(ctx.queryParam(TodoController.STATUS_KEY)).thenReturn(targetStatusString);
@@ -783,7 +783,7 @@ void canFilterTodosByContentsOfBody() throws IOException {
 
   Map<String, List<String>> queryParams = new HashMap<>();
   queryParams.put(TodoController.BODY_KEY,
-      Arrays.asList(new String[] { phrase }));
+      Arrays.asList(new String[] {phrase}));
 
   when(ctx.queryParamMap()).thenReturn(queryParams);
   when(ctx.queryParam(TodoController.BODY_KEY)).thenReturn(phrase);
@@ -815,7 +815,7 @@ void canFilterTodosByOwner() throws IOException {
 
   Map<String, List<String>> queryParams = new HashMap<>();
   queryParams.put(TodoController.OWNER_KEY,
-      Arrays.asList(new String[] { owner }));
+      Arrays.asList(new String[] {owner}));
 
   when(ctx.queryParamMap()).thenReturn(queryParams);
   when(ctx.queryParam(TodoController.OWNER_KEY)).thenReturn(owner);
@@ -847,7 +847,7 @@ void canFilterTodosByCategory() throws IOException {
 
   Map<String, List<String>> queryParams = new HashMap<>();
   queryParams.put(TodoController.CATEGORY_KEY,
-      Arrays.asList(new String[] { category }));
+      Arrays.asList(new String[] {category}));
 
   when(ctx.queryParamMap()).thenReturn(queryParams);
   when(ctx.queryParam(TodoController.CATEGORY_KEY)).thenReturn(category);
@@ -910,10 +910,10 @@ void canApplyCombinationsOfFilters() throws IOException {
   Map<String, List<String>> queryParams = new HashMap<>();
 
   queryParams.put(TodoController.OWNER_KEY,
-      Arrays.asList(new String[] { owner }));
+      Arrays.asList(new String[] {owner}));
 
   queryParams.put(TodoController.STATUS_KEY,
-      Arrays.asList(new String[] { statusString }));
+      Arrays.asList(new String[] {statusString}));
 
   when(ctx.queryParamMap()).thenReturn(queryParams);
 
@@ -959,4 +959,3 @@ void canApplyCombinationsOfFilters() throws IOException {
 
 
 }
-
