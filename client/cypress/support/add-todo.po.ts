@@ -29,7 +29,7 @@ export class AddTodoPage {
   }
 
   addTodoButton() {
-    return cy.get.apply(this.button);
+    return cy.get(this.button);
   }
 
   selectMatSelectValue(select: Cypress.Chainable, value: string) {
