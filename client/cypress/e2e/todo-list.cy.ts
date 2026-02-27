@@ -23,29 +23,29 @@ describe('Todo list', () => {
   });
 
   it('Should filter by owner and check returned elements', () => {
-    cy.get('[data-test=todoOwnerInput]').type('Alice');
+    cy.get('[data-test=todoOwnerInput]').type('Chris');
 
     // All of the user cards should have the name we are filtering by
     page.getTodoCards().each(e => {
-      cy.wrap(e).find('.todo-card-owner').should('have.text', 'Alice');
+      cy.wrap(e).find('.todo-card-owner').should('have.text', 'Chris');
     });
 
     // (We check this two ways to show multiple ways to check this)
     page.getTodoCards().find('.todo-card-owner').each(el =>
-      expect(el.text()).to.equal('Alice')
+      expect(el.text()).to.equal('Chris')
     );
   });
 
   it('Should filter by category and check returned elements', () => {
     // Filter for company 'OHMNET'
-    cy.get('[formcontrolname=category]').type('home');
+    cy.get('[formcontrolname=category]').type('video games');
 
     page.getTodoCards().should('have.lengthOf.above', 0);
 
 
     // All of the user cards should have the company we are filtering by
     page.getTodoCards().find('.todo-card-category').each(card => {
-      cy.wrap(card).should('have.text', 'home');
+      cy.wrap(card).should('have.text', 'video games');
     });
   });
 

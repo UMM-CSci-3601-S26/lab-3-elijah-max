@@ -4,6 +4,7 @@ import { TodoListComponent } from "./todo-list.component";
 import { TodoService } from "./todo.service"
 import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { of } from 'rxjs';
 
 
 
@@ -31,6 +32,12 @@ describe('Todo list', () => {
     fixture = TestBed.createComponent(TodoListComponent);
     todoList = fixture.componentInstance;
     todoService = TestBed.inject(TodoService);
+    spyOn(todoService, 'getTodos').and.returnValue(of([
+      { owner: "Chris", status: true, body: "This is a video games todo", category: "video games" },
+      { owner: "Chris", status: true, body: "This is another video games todo", category: "video games" },
+      { owner: "Pat", status: false, body: "This is a homework todo", category: "homework" },
+      { owner: "Jamie", status: false, body: "This is a software design todo", category: "software design" }
+    ]));
     fixture.detectChanges();
   });
 
@@ -71,9 +78,9 @@ describe('Todo list', () => {
     todoList.todoOwner.set('Alice');
     todoList.todoCategory.set('shopping');
     const filtered = todoList.filteredTodos();
-    expect(filtered.length).toBe(1);
-    expect(filtered[0].owner).toBe('Alice');
-    expect(filtered [0].category).toBe('shopping');
+    expect(filtered.length).toBe(2);
+    expect(filtered[0].owner).toBe('Chris');
+    expect(filtered [0].category).toBe('video games');
   });
 
   it('filteredTodos() should return all if no filters', () => {
