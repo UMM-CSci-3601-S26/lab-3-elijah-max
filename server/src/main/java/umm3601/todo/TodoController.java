@@ -184,15 +184,16 @@ public class TodoController implements Controller {
    * @return a Bson sorting document that can be used in the `sort` method
    *  to sort the database collection of todos
    */
-  private Bson constructSortingOrder(Context ctx) {
-    // Sort the results. Use the `orderBy` query param (default "category")
-    // as the field to sort by, and the query param `sortorder` (default
-    // "asc") to specify the sort order.
-    String orderBy = Objects.requireNonNullElse(ctx.queryParam("orderBy"), "category");
-    String sortOrder = Objects.requireNonNullElse(ctx.queryParam("sortorder"), "asc");
-    Bson sortingOrder = sortOrder.equals("desc") ?  Sorts.descending(orderBy) : Sorts.ascending(orderBy);
-    return sortingOrder;
-  }
+ private Bson constructSortingOrder(Context ctx) {
+
+  String orderBy = Objects.requireNonNullElse(ctx.queryParam("sortBy"), "category");
+
+  String sortOrder = Objects.requireNonNullElse(ctx.queryParam("sortOrder"), "asc");
+
+  return sortOrder.equals("desc")
+      ? Sorts.descending(orderBy)
+      : Sorts.ascending(orderBy);
+}
 
   // Group todos by owner
   public void getTodosGroupedByOwner(Context ctx) {

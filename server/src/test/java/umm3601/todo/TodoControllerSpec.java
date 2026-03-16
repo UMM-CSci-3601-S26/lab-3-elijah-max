@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bson.Document;
+
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -40,6 +41,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
 
 import io.javalin.Javalin;
 import io.javalin.http.BadRequestResponse;
@@ -729,6 +731,222 @@ class TodoControllerSpec {
     assertEquals(3, todoArrayListCaptor.getValue().size());
   }
 
+  @Test
+  void canLimitNumberOfTodosReturned() throws IOException {
+
+  }
+
+  @Test
+void canFilterTodosByStatus() throws IOException {
+
+  Boolean targetStatus = true;
+  String targetStatusString = "complete";
+
+  Map<String, List<String>> queryParams = new HashMap<>();
+  queryParams.put(TodoController.STATUS_KEY,
+      Arrays.asList(new String[] {targetStatusString}));
+
+  when(ctx.queryParamMap()).thenReturn(queryParams);
+  when(ctx.queryParam(TodoController.STATUS_KEY)).thenReturn(targetStatusString);
+
+  Validation validation = new Validation();
+  Validator<Boolean> validator =
+      validation.validator(TodoController.STATUS_KEY, Boolean.class, targetStatusString);
+
+  when(ctx.queryParamAsClass(TodoController.STATUS_KEY, Boolean.class))
+      .thenReturn(validator);
+
+  todoController.getTodos(ctx);
+
+  verify(ctx).json(todoArrayListCaptor.capture());
+  verify(ctx).status(HttpStatus.OK);
+
+  List<Todo> result = todoArrayListCaptor.getValue();
+
+  assertEquals(3, result.size());
+
+  for (Todo todo : result) {
+    assertTrue(todo.status);
+  }
+}
+
+
+
+
+
+
+
+  @Test
+void canFilterTodosByContentsOfBody() throws IOException {
+
+  String phrase = "games";
+
+  Map<String, List<String>> queryParams = new HashMap<>();
+  queryParams.put(TodoController.BODY_KEY,
+      Arrays.asList(new String[] {phrase}));
+
+  when(ctx.queryParamMap()).thenReturn(queryParams);
+  when(ctx.queryParam(TodoController.BODY_KEY)).thenReturn(phrase);
+
+  Validation validation = new Validation();
+  Validator<String> validator =
+      validation.validator(TodoController.BODY_KEY, String.class, phrase);
+
+  when(ctx.queryParamAsClass(TodoController.BODY_KEY, String.class))
+      .thenReturn(validator);
+
+  todoController.getTodos(ctx);
+
+  verify(ctx).json(todoArrayListCaptor.capture());
+
+  List<Todo> result = todoArrayListCaptor.getValue();
+
+  assertEquals(2, result.size());
+
+  for (Todo todo : result) {
+    assertTrue(todo.body.contains("games"));
+  }
+}
+
+  @Test
+void canFilterTodosByOwner() throws IOException {
+
+  String owner = "Chris";
+
+  Map<String, List<String>> queryParams = new HashMap<>();
+  queryParams.put(TodoController.OWNER_KEY,
+      Arrays.asList(new String[] {owner}));
+
+  when(ctx.queryParamMap()).thenReturn(queryParams);
+  when(ctx.queryParam(TodoController.OWNER_KEY)).thenReturn(owner);
+
+  Validation validation = new Validation();
+  Validator<String> validator =
+      validation.validator(TodoController.OWNER_KEY, String.class, owner);
+
+  when(ctx.queryParamAsClass(TodoController.OWNER_KEY, String.class))
+      .thenReturn(validator);
+
+  todoController.getTodos(ctx);
+
+  verify(ctx).json(todoArrayListCaptor.capture());
+
+  List<Todo> result = todoArrayListCaptor.getValue();
+
+  assertEquals(2, result.size());
+
+  for (Todo todo : result) {
+    assertEquals(owner, todo.owner);
+  }
+}
+
+  @Test
+void canFilterTodosByCategory() throws IOException {
+
+  String category = "video games";
+
+  Map<String, List<String>> queryParams = new HashMap<>();
+  queryParams.put(TodoController.CATEGORY_KEY,
+      Arrays.asList(new String[] {category}));
+
+  when(ctx.queryParamMap()).thenReturn(queryParams);
+  when(ctx.queryParam(TodoController.CATEGORY_KEY)).thenReturn(category);
+
+  Validation validation = new Validation();
+  Validator<String> validator =
+      validation.validator(TodoController.CATEGORY_KEY, String.class, category);
+
+  when(ctx.queryParamAsClass(TodoController.CATEGORY_KEY, String.class))
+      .thenReturn(validator);
+
+  todoController.getTodos(ctx);
+
+  verify(ctx).json(todoArrayListCaptor.capture());
+
+  List<Todo> result = todoArrayListCaptor.getValue();
+
+  assertEquals(2, result.size());
+
+  for (Todo todo : result) {
+    assertEquals(category, todo.category);
+  }
+}
+
+ @Test
+void canSortByTodoField() throws IOException {
+
+  Map<String, List<String>> queryParams = new HashMap<>();
+
+  queryParams.put("sortBy", Arrays.asList("owner"));
+  queryParams.put("sortOrder", Arrays.asList("asc"));
+
+  when(ctx.queryParamMap()).thenReturn(queryParams);
+
+  when(ctx.queryParam("sortBy")).thenReturn("owner");
+  when(ctx.queryParam("sortOrder")).thenReturn("asc");
+
+  todoController.getTodos(ctx);
+
+  verify(ctx).json(todoArrayListCaptor.capture());
+
+  List<Todo> result = todoArrayListCaptor.getValue();
+
+  assertEquals(5, result.size());
+
+  // Chris should be first alphabetically
+  assertEquals("Chris", result.get(0).owner);
+
+  // Sam should be last alphabetically
+  assertEquals("Sam", result.get(4).owner);
+}
+
+
+  @Test
+void canApplyCombinationsOfFilters() throws IOException {
+
+  String owner = "Chris";
+  String statusString = "complete";
+
+  Map<String, List<String>> queryParams = new HashMap<>();
+
+  queryParams.put(TodoController.OWNER_KEY,
+      Arrays.asList(new String[] {owner}));
+
+  queryParams.put(TodoController.STATUS_KEY,
+      Arrays.asList(new String[] {statusString}));
+
+  when(ctx.queryParamMap()).thenReturn(queryParams);
+
+  when(ctx.queryParam(TodoController.OWNER_KEY)).thenReturn(owner);
+  when(ctx.queryParam(TodoController.STATUS_KEY)).thenReturn(statusString);
+
+  Validation validation = new Validation();
+
+  Validator<String> ownerValidator =
+      validation.validator(TodoController.OWNER_KEY, String.class, owner);
+
+  Validator<Boolean> statusValidator =
+      validation.validator(TodoController.STATUS_KEY, Boolean.class, statusString);
+
+  when(ctx.queryParamAsClass(TodoController.OWNER_KEY, String.class))
+      .thenReturn(ownerValidator);
+
+  when(ctx.queryParamAsClass(TodoController.STATUS_KEY, Boolean.class))
+      .thenReturn(statusValidator);
+
+  todoController.getTodos(ctx);
+
+  verify(ctx).json(todoArrayListCaptor.capture());
+
+  List<Todo> result = todoArrayListCaptor.getValue();
+
+  assertEquals(2, result.size());
+
+  for (Todo todo : result) {
+    assertEquals("Chris", todo.owner);
+    assertTrue(todo.status);
+  }
+}
 
 
 
@@ -741,4 +959,3 @@ class TodoControllerSpec {
 
 
 }
-
